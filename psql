@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+source "$(dirname "$(readlink -f "$0")")/include.bash"
+
+# Simple wrapper for running psql inside a temporary Docker container
+# Usage examples:
+#   ./psql-docker.sh "postgres://user:pass@host:port/db?sslmode=require"
+#   ./psql-docker.sh "postgres://..." -c "SELECT now();"
+#   ./psql-docker.sh "postgres://..." -f /path/to/script.sql
+
+if [[ $# -lt 1 ]]; then
+  log_info "Usage: $0 <connection-string> [psql args...]"
+  log_info "Example: $0 postgres://user:pass@host:port/db?sslmode=require -c 'SELECT version();'"
+  exit 1
+fi
+
+CONN_STR="$1"
+shift || true
+
+docker run --rm -it \
+  --network host \
+  postgres:16 \
+  psql "$CONN_STR" "$@"

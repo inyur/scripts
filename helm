@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+source "$(dirname "$(readlink -f "$0")")/include.bash"
+
+# Docs: https://hub.docker.com/r/alpine/helm
+
+#https://stackoverflow.com/questions/71341356/how-can-i-suppress-path-expansion-in-the-git-for-windows-bash/71352554#71352554
+MSYS_NO_PATHCONV=1
+export MSYS_NO_PATHCONV
+
+ROOT=${ROOT:-$PWD}
+
+docker run --rm \
+  --net=host \
+  --interactive \
+  --volume "${ROOT}:${ROOT}" \
+  --volume ~/.kube:/root/.kube \
+  --volume ~/.helm:/root/.helm \
+  --volume ~/.config/helm:/root/.config/helm \
+  --volume ~/.cache/helm:/root/.cache/helm \
+  -e KUBECONFIG="${KUBECONFIG:-}" \
+  alpine/helm:3.14.3 \
+  "$@"
+
+# Extra docs:
+# https://stackoverflow.com/questions/17770902/forward-host-port-to-docker-container
