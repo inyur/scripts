@@ -36,9 +36,9 @@ while [[ $# -gt 0 ]]; do
       exit 1
       ;;
     *)
-          echo "Unknown positional argument $1"
-          exit 1
-          ;;
+    echo "Unknown positional argument $1"
+      exit 1
+    ;;
   esac
 done
 
