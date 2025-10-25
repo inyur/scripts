@@ -21,7 +21,7 @@ source "$(dirname "$(readlink -f "$0")")/scripts/make.bash"
 ##############
 PARENT_SCRIPT
 
-source "$(dirname "$(readlink -f "$0")")/include.bash"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/include.bash"
 
 
 # https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash/14203146#14203146
@@ -65,8 +65,8 @@ done
 checkout_submodule_branch() {
   log_info "Inspect submodule $name"
   local name="$1";
-  local branch=$(git config -f ${SCRIPT_PATH}/.gitmodules submodule.$name.branch)
-  local path=$(git config -f ${SCRIPT_PATH}/.gitmodules submodule.$name.path)
+  local branch=$(git config -f "${SCRIPT_PATH}/.gitmodules" submodule.$name.branch)
+  local path=$(git config -f "${SCRIPT_PATH}/.gitmodules" submodule.$name.path)
 
   # if branch is not empty, checkout and pull
   if [ -n "$branch" ]; then
