@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/include.bash"
+
+docker run --rm  \
+  --name=acme.sh.exec \
+  neilpang/acme.sh \
+  "$@"
