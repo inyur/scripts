@@ -1,20 +1,51 @@
 #!/usr/bin/env bash
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/include.bash"
 
-if [[ $# -lt 1 ]]; then
-  log_error "Usage: $0 <path to npm module>"
-  exit 1
-fi
+# defaults
+NPM_MODULE_PATH="./"
+DONT_PUBLISH_SOURCEMAPS=""
+DRY_RUN="${DRY_RUN:-}"
+DONT_PUBLISH="${DONT_PUBLISH:-}"
 
-NPM_MODULE_PATH="$1"
-shift || true
+# Parse args: accept flags anywhere; if an arg doesn't start with '-', treat it as path (first such)
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dont-publish-sourcemaps)
+      DONT_PUBLISH_SOURCEMAPS="true"
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN="true"
+      shift
+      ;;
+    --dont-publish)
+      DONT_PUBLISH="true"
+      shift
+      ;;
+    --) # end of flags
+      shift
+      break
+      ;;
+    -*) # unknown short/long flag — keep or warn
+      echo "Warning: unknown option '$1' (ignored)"
+      shift
+      ;;
+    *) # positional: first non-flag is module path
+      if [[ "${NPM_MODULE_PATH}" == "./" ]]; then
+        NPM_MODULE_PATH="$1"
+      else
+        # extra positional args ignored
+        echo "Warning: extra positional arg '$1' ignored"
+      fi
+      shift
+      ;;
+  esac
+done
 
 # Hides corejs banners
 export ADBLOCK="true"
 # Hides corejs banners
 export DISABLE_OPENCOLLECTIVE="true"
-
-export PUBLIC="true"
 
 NPM_MODULE_PATH="$(cd "$(pwd)/${NPM_MODULE_PATH}" && pwd)";
 
@@ -109,6 +140,12 @@ fi
 # Build
 # https://stackoverflow.com/questions/50683885/how-to-check-if-npm-script-exists/50684147#50684147
 npm run build --if-present
+
+if [[ "${DONT_PUBLISH_SOURCEMAPS}" == "true" ]]; then
+  log_info "Removing sourcemap files (*.map)..."
+  find "${NPM_MODULE_PATH}/dist" -type f -name "*.map" -print -delete 2>/dev/null || true
+fi
+
 # Publish
 if [[ -z ${DRY_RUN:-} && -z ${DONT_PUBLISH:-} ]]; then
   npm publish "${NPM_PUBLISH_PARAMS_ARR[@]}"
