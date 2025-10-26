@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source "$(dirname "$(readlink -f "$0")")/include.bash"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/include.bash"
 
 if [[ $# -lt 1 ]]; then
   log_error "Usage: $0 <path to Dockerfile> <image name>:<image tag>"
