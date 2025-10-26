@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source "$(dirname "$(readlink -f "$0")")/include.bash"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/include.bash"
 
 if [[ $# -lt 1 ]]; then
   log_error "Usage: $0 <path to npm module>"
@@ -16,7 +16,9 @@ export DISABLE_OPENCOLLECTIVE="true"
 
 export PUBLIC="true"
 
-if [ -e "${NPM_MODULE_PATH}/package.json" ]; then
+NPM_MODULE_PATH="$(cd "$(pwd)/${NPM_MODULE_PATH}" && pwd)";
+
+if [ ! -e "${NPM_MODULE_PATH}/package.json" ]; then
   log_error "Error: package.json not found in path '${NPM_MODULE_PATH}'"
   exit 1
 fi
@@ -51,11 +53,11 @@ if [[ "${IN_REGISTRY}" ]]; then
   VER_IN_REGISTRY=$(echo "$VER_IN_REGISTRY" | tail -n1)
   npm pkg set version="${VER_IN_REGISTRY}"
   # echo "Setted version: ${VER_IN_REGISTRY}"
-  if [[ "${CI_COMMIT_REF_NAME}" == "${CI_DEFAULT_BRANCH}" ]]; then
+  if [[ "${CI_COMMIT_REF_NAME:-master}" == "${CI_DEFAULT_BRANCH:-master}" ]]; then
     npm version patch --no-git-tag-version
   fi
 fi
-if [[ "${CI_COMMIT_REF_NAME}" != "${CI_DEFAULT_BRANCH}" ]]; then
+if [[ "${CI_COMMIT_REF_NAME:-master}" != "${CI_DEFAULT_BRANCH:-master}" ]]; then
   VER_IN_PKG_JSON=$(npm pkg get version | tr -d '"')
   echo "Inspect version ${VER_IN_PKG_JSON}"
   if ! [[ "${VER_IN_PKG_JSON}" =~ .+\..+\..+-.+ ]]; then # 1.0.22-beta.0
@@ -95,10 +97,19 @@ if [[ "${CI_COMMIT_REF_NAME}" != "${CI_DEFAULT_BRANCH}" ]]; then
     npm version prerelease --preid="${CI_COMMIT_REF_SLUG}" --no-git-tag-version
   fi
 fi
+
+NPM_PUBLISH_PARAMS_ARR=(--verbose)
+
+if grep -q '"publishConfig"[[:space:]]*:[[:space:]]*{[[:space:]]*"access"[[:space:]]*:[[:space:]]*"public"' "${NPM_MODULE_PATH}/package.json"; then
+  NPM_PUBLISH_PARAMS_ARR+=(--access public);
+fi
+
+[ ! -e "${NPM_MODULE_PATH}/node_modules" ] && npm ci
+
 # Build
 # https://stackoverflow.com/questions/50683885/how-to-check-if-npm-script-exists/50684147#50684147
 npm run build --if-present
 # Publish
-if [[ -z ${DRY_RUN} && -z ${DONT_PUBLISH} ]]; then
-  npm publish --verbose
+if [[ -z ${DRY_RUN:-} && -z ${DONT_PUBLISH:-} ]]; then
+  npm publish "${NPM_PUBLISH_PARAMS_ARR[@]}"
 fi
