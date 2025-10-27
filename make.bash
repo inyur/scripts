@@ -29,12 +29,11 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
   init)
     cd "${SCRIPT_PATH}" || exit 1
-    log_info "Pulling latest root repository changes..."
     if [ "$(git rev-parse --abbrev-ref HEAD)" = "HEAD" ]; then
         log_info "Detached HEAD"
     else
         log_info "On branch $(git rev-parse --abbrev-ref HEAD)"
-        log_info "git pull"
+        log_info "Pulling latest root repository changes..."
         git pull --no-edit
     fi
     log_info "Initializing and updating all submodules..."
