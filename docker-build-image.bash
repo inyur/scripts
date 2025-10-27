@@ -249,7 +249,8 @@ build_image_script() {
   local PLATFORMS=$1
   local TARGET="${2:-}"
   local SHOULD_PUSH="${3:-}"
-
+  local MULTIPLATFORM
+  [[ "$PLATFORMS" == *","* ]] && MULTIPLATFORM="YES"
   local SHOULD_USE_LOCAL
 
   # ${VAR:+VALUE} означает:
@@ -261,7 +262,7 @@ build_image_script() {
 
   [ "$SHOULD_PUSH" = true ] && [ -z ${NO_PUSH:-} ] && PARAMS_ARR+=(--push)
 
-  [ ! -n "${TARGET}" ] && PARAMS_ARR+=(--load)
+  [ ! -n "${TARGET}" ] && [ ! -n "${MULTIPLATFORM}" ] && PARAMS_ARR+=(--load)
 
   [[ ! -n "${TARGET}" && -n "${IMAGE_TAG}" ]] \
     && PARAMS_ARR+=(--tag "${IMAGE_NAME}:${IMAGE_TAG}")
