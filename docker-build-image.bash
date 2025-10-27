@@ -249,7 +249,7 @@ build_image_script() {
   local PLATFORMS=$1
   local TARGET="${2:-}"
   local SHOULD_PUSH="${3:-}"
-  local MULTIPLATFORM
+  local MULTIPLATFORM=""
   [[ "$PLATFORMS" == *","* ]] && MULTIPLATFORM="YES"
   local SHOULD_USE_LOCAL
 
