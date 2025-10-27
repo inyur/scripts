@@ -274,7 +274,8 @@ build_image_script() {
   [ -z "${NO_LOCAL_CACHE:-}" ] && [ -e "${DOCKER_IMAGE_CACHE_PATH}/index.json" ] && \
     PARAMS_ARR+=(--cache-from=type=local,src=${DOCKER_IMAGE_CACHE_PATH})
 
-  PARAMS_ARR+=(--cache-from=type=docker)
+  # Use cache from docker only on local machine
+  [ -n "${CI:-}" ] && PARAMS_ARR+=(--cache-from=type=docker)
 
   # [ -n "${TARGET}" ] && add_unique_cache_from "${IMAGE_NAME_AND_TAG}"
 
