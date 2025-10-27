@@ -189,8 +189,8 @@ CACHE_FROM_ARR=()
 add_unique_cache_from() {
   local element="$1"
 
-  if [ "${#STAGES_ARR[@]:-0}" -gt 0 ]; then
-    for e in "${CACHE_FROM_ARR[@]:-0}}"; do
+  if [ "${#STAGES_ARR[@]}" -gt 0 ]; then
+    for e in "${CACHE_FROM_ARR[@]}"; do
       [[ "$e" == "$element" ]] && return 0
     done
   fi
@@ -283,7 +283,7 @@ build_image_script() {
   [ -n "${TARGET}" ] && PARAMS_ARR+=(--cache-to=type=inline)
   [ ! -n "${TARGET}" ] && PARAMS_ARR+=(--squash)
 
-  if [ "${#CACHE_FROM_ARR[@]:-0}" -gt 0 ]; then
+  if [ "${#CACHE_FROM_ARR[@]}" -gt 0 ]; then
     for CACHE_FROM_ITEM in "${CACHE_FROM_ARR[@]}"; do
       PARAMS_ARR+=(--cache-from=${CACHE_FROM_ITEM})
     done
