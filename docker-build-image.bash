@@ -248,6 +248,8 @@ build_image_script() {
   local TARGET="${2:-}"
   local SHOULD_PUSH="${3:-}"
 
+  local SHOULD_USE_LOCAL
+
   # ${VAR:+VALUE} означает:
   # «Если $VAR не пустой, вернуть VALUE, иначе — пустую строку».
 
@@ -281,7 +283,7 @@ build_image_script() {
   PARAMS_ARR+=(--build-arg DATETIME=${DATEFSSAFE})
 
   [ -n "${TARGET}" ] && PARAMS_ARR+=(--cache-to=type=inline)
-  [ ! -n "${TARGET}" ] && PARAMS_ARR+=(--squash)
+  # [ ! -n "${TARGET}" ] && PARAMS_ARR+=(--squash) # Depreacted
 
   if [ "${#CACHE_FROM_ARR[@]}" -gt 0 ]; then
     for CACHE_FROM_ITEM in "${CACHE_FROM_ARR[@]}"; do
