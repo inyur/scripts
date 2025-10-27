@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -xv
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/include.bash"
 
 if [[ $# -lt 1 ]]; then
