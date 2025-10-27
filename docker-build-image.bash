@@ -225,11 +225,11 @@ for COMMIT_HASH in "${COMMIT_HASHES_HISTORY_ARR[@]}"; do
     #fi
     {
           if docker manifest inspect "${IMAGE_NAME_AND_TAG_FOR_CACHE}" >/dev/null 2>&1; then
-            log_info "Image exists in registry: ${IMAGE_NAME_AND_TAG_FOR_CACHE}"
+            log_done "Image exists in registry: ${IMAGE_NAME_AND_TAG_FOR_CACHE}"
             add_unique_cache_from "${IMAGE_NAME_AND_TAG_FOR_CACHE}"
             echo "${COMMIT_HASH}" >"/tmp/cache_found.$$"
           else
-            log_warn "Image not found in registry: ${IMAGE_NAME_AND_TAG_FOR_CACHE}"
+            log_info "Image not found in registry: ${IMAGE_NAME_AND_TAG_FOR_CACHE}"
           fi
     } &
     pids+=($!)
