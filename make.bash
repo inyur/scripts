@@ -30,7 +30,13 @@ while [[ $# -gt 0 ]]; do
   init)
     cd "${SCRIPT_PATH}" || exit 1
     log_info "Pulling latest root repository changes..."
-    git pull --no-edit
+    if [ "$(git rev-parse --abbrev-ref HEAD)" = "HEAD" ]; then
+        log_info "Detached HEAD"
+    else
+        log_info "On branch $(git rev-parse --abbrev-ref HEAD)"
+        log_info "git pull"
+        git pull --no-edit
+    fi
     log_info "Initializing and updating all submodules..."
     git config -f .gitmodules --get-regexp '^submodule\..*\.url$' |
       awk '{print $1}' | sed 's/^submodule\.//; s/\.url$//' |
