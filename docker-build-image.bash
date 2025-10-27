@@ -156,6 +156,7 @@ if ! docker buildx inspect "$BUILDER_NAME" >/dev/null 2>&1; then
     --driver-opt "env.BUILDKIT_STEP_LOG_MAX_SPEED=10485760" \
     --driver-opt "env.BUILDKIT_CACHE_MOUNT_NS=shared" \
     --buildkitd-flags '--oci-worker-gc=false' \
+    --buildkitd-config "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/helpers/buildkitd.toml" \
     --bootstrap
   log_done "Builder '$BUILDER_NAME' created"
 else
