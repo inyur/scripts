@@ -90,7 +90,7 @@ log_info "Image name: ${IMAGE_NAME}, tag: ${IMAGE_TAG}"
 #done
 
 BUILDER_NAME="multiarch-builder"
-[ -n "${DEDICATED_BUILDER}" ] && BUILDER_NAME="multiarch-builder-$$"
+[ -n "${DEDICATED_BUILDER:-}" ] && BUILDER_NAME="multiarch-builder-$$"
 
 cleanup_called=false
 docker_builder_created=false
@@ -98,8 +98,8 @@ cleanup() {
   if [ "$cleanup_called" = true ]; then return; fi
   if [ "$docker_builder_created" != true ]; then return; fi
   cleanup_called=true
-  [ -n "${DEDICATED_BUILDER}" ] && log_info "Clearing builder ${BUILDER_NAME}..."
-  [ -n "${DEDICATED_BUILDER}" ] && (docker buildx rm "$BUILDER_NAME" 2>&1 > /dev/null) || true
+  [ -n "${DEDICATED_BUILDER:-}" ] && log_info "Clearing builder ${BUILDER_NAME}..."
+  [ -n "${DEDICATED_BUILDER:-}" ] && (docker buildx rm "$BUILDER_NAME" 2>&1 > /dev/null) || true
 }
 
 trap 'cleanup' EXIT SIGHUP SIGINT SIGQUIT SIGTERM ERR
@@ -143,7 +143,7 @@ if ! docker context ls --format '{{.Name}}' | grep -qx "$CONTEXT_NAME"; then
 fi
 
 DOCKER_IMAGE_CACHE_PATH="${SCRIPT_PATH}/../../.buildx-cache";
-[ -z "${NO_LOCAL_CACHE}" ] && mkdir -p "${DOCKER_IMAGE_CACHE_PATH}"
+[ -z "${NO_LOCAL_CACHE:-}" ] && mkdir -p "${DOCKER_IMAGE_CACHE_PATH}"
 DOCKER_IMAGE_CACHE_PATH=$(realpath "${SCRIPT_PATH}/../../.buildx-cache")
 
 if ! docker buildx inspect "$BUILDER_NAME" >/dev/null 2>&1; then
@@ -255,7 +255,7 @@ build_image_script() {
 
   local PARAMS_ARR=()
 
-  [ "$SHOULD_PUSH" = true ] && [ -z $NO_PUSH ] && PARAMS_ARR+=(--push)
+  [ "$SHOULD_PUSH" = true ] && [ -z ${NO_PUSH:-} ] && PARAMS_ARR+=(--push)
 
   [ ! -n "${TARGET}" ] && PARAMS_ARR+=(--load)
 
@@ -266,8 +266,8 @@ build_image_script() {
   local IMAGE_NAME_AND_TAG="${IMAGE_NAME}:${TARGET:+${IMAGE_CACHE_TAG_PREFIX}${TARGET}${IMAGE_CACHE_TAG_SUFFIX}}${GIT_COMMIT_HASH}"
   PARAMS_ARR+=(--tag "${IMAGE_NAME_AND_TAG}")
 
-  [ -z "${NO_LOCAL_CACHE}" ] && PARAMS_ARR+=(--cache-to=type=local,dest=${DOCKER_IMAGE_CACHE_PATH},mode=max)
-  [ -z "${NO_LOCAL_CACHE}" ] && [ -e "${DOCKER_IMAGE_CACHE_PATH}/index.json" ] && \
+  [ -z "${NO_LOCAL_CACHE:-}" ] && PARAMS_ARR+=(--cache-to=type=local,dest=${DOCKER_IMAGE_CACHE_PATH},mode=max)
+  [ -z "${NO_LOCAL_CACHE:-}" ] && [ -e "${DOCKER_IMAGE_CACHE_PATH}/index.json" ] && \
     PARAMS_ARR+=(--cache-from=type=local,src=${DOCKER_IMAGE_CACHE_PATH})
 
   PARAMS_ARR+=(--cache-from=type=docker)
