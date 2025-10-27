@@ -54,7 +54,7 @@ if [ ! -e ${DOCKER_FILEPATH} ]; then
   exit 1;
 fi
 
-[ -z "${IMAGE_CONTEXT}" ] && IMAGE_CONTEXT=$(dirname "$(readlink -f "${DOCKER_FILEPATH}")")
+[ -z "${IMAGE_CONTEXT:-}" ] && IMAGE_CONTEXT=$(dirname "$(readlink -f "${DOCKER_FILEPATH}")")
 
 IMAGE_NAME="${IMAGE_NAME_AND_TAG%%:*}" # всё до первого :
 [ -z "${IMAGE_NAME}" ] && IMAGE_NAME=$(basename "$IMAGE_CONTEXT")
