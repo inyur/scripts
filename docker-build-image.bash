@@ -208,6 +208,11 @@ IMAGE_CACHE_TAG_SUFFIX='-'
 STAGES_ARR=($(get_build_stages || true))
 [ "${#STAGES_ARR[@]}" -eq 0 ] && STAGES_ARR+=("${PSEUDO_CACHE_TARGET}")
 
+log_info "Dockerfile stages:"
+for stage in "${STAGES_ARR[@]}"; do
+  log_info "Stage: '$stage'"
+done
+
 COMMIT_HASHES_HISTORY_ARR=($(git rev-list --max-count=10 HEAD))
 imageForCacheFound=false;
 
@@ -311,7 +316,7 @@ build_images() {
   #[ "${BUILD_ONLY_AMD64:-}" = "true" ] && PLATFORMS="linux/amd64"
 
   if [ "${#STAGES_ARR[@]}" -gt 0 ]; then
-    for TARGET in "${STAGES_ARR[@]:-}"; do
+    for TARGET in "${STAGES_ARR[@]}"; do
       log_info "Building target: $TARGET"
       build_image_script $PLATFORMS $TARGET $SHOULD_PUSH
     done
