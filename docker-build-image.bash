@@ -305,7 +305,7 @@ build_images() {
   #PLATFORMS="linux/amd64,linux/arm64"
   #[ "${BUILD_ONLY_AMD64:-}" = "true" ] && PLATFORMS="linux/amd64"
 
-  if [ "${#STAGES_ARR[@]:-0}" -gt 0 ]; then
+  if [ "${#STAGES_ARR[@]}" -gt 0 ]; then
     for TARGET in "${STAGES_ARR[@]:-}"; do
       log_info "Building target: $TARGET"
       build_image_script $PLATFORMS $TARGET $SHOULD_PUSH
