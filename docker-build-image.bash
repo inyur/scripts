@@ -205,7 +205,7 @@ IMAGE_CACHE_TAG_PREFIX='_cache-stage-'
 IMAGE_CACHE_TAG_SUFFIX='-'
 
 STAGES_ARR=($(get_build_stages || true))
-[ "${#STAGES_ARR[@]:-0}" -eq 0 ] && STAGES_ARR+=("${PSEUDO_CACHE_TARGET}")
+[ "${#STAGES_ARR[@]}" -eq 0 ] && STAGES_ARR+=("${PSEUDO_CACHE_TARGET}")
 
 COMMIT_HASHES_HISTORY_ARR=($(git rev-list --max-count=10 HEAD))
 imageForCacheFound=false;
