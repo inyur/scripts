@@ -50,7 +50,7 @@ DOCKER_FILEPATH="$(readlink -f "${DOCKER_FILEPATH}")"
 [ -d "${DOCKER_FILEPATH}" ] && DOCKER_FILEPATH="${DOCKER_FILEPATH}/Dockerfile";
 
 if [ ! -e ${DOCKER_FILEPATH} ]; then
-  echo "Dockerfile not found by path ${DOCKER_FILEPATH}"
+  log_error "Dockerfile not found by path ${DOCKER_FILEPATH}"
   exit 1;
 fi
 
