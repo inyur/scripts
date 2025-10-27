@@ -45,6 +45,8 @@ done
 # Remove last slash if exist
 DOCKER_FILEPATH="${DOCKER_FILEPATH%/}"
 
+DOCKER_FILEPATH="$(readlink -f "${DOCKER_FILEPATH}")"
+
 [ -d "${DOCKER_FILEPATH}" ] && DOCKER_FILEPATH="${DOCKER_FILEPATH}/Dockerfile";
 
 if [ ! -e ${DOCKER_FILEPATH} ]; then
