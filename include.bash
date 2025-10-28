@@ -1,7 +1,22 @@
 #!/usr/bin/env bash
 
+: <<'PARENT_SCRIPT'
+##############
 # This file should be included in other files by command:
-# source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/include.bash"
+# Пример включения в начале скрипта
+##############
+
+#!/usr/bin/env bash
+THIS_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${THIS_SCRIPT_DIR}/.<fill real path>./include.bash"
+
+##############
+# КОНЕЦ примера включения в начале скрипта
+##############
+PARENT_SCRIPT
+
+#
+#
 
 set -euo pipefail # Fail on first error
 shopt -s expand_aliases
