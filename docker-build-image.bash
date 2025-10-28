@@ -30,7 +30,10 @@ while [[ $# -gt 0 ]]; do
       NO_PUSH=YES
       shift 1
       ;;
-
+    --build-only-amd64)
+      BUILD_ONLY_AMD64=YES
+      shift 1
+      ;;
     -*|--*)
       echo "Unknown option $1"
       exit 1
@@ -325,8 +328,11 @@ build_images() {
   build_image_script $PLATFORMS "" $SHOULD_PUSH
 }
 
-build_images "linux/amd64"
+[ -n "${BUILD_ONLY_AMD64:-}" ] && \
+  build_images "linux/amd64" true
 
-build_images "linux/amd64,linux/arm64" true
+[ ! -n "${BUILD_ONLY_AMD64:-}" ] && \
+  build_images "linux/amd64" && \
+  build_images "linux/amd64,linux/arm64" true
 
 log_done "All builds finished"
