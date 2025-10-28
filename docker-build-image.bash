@@ -258,7 +258,6 @@ build_image_script() {
   local SHOULD_PUSH="${3:-}"
   local MULTIPLATFORM=""
   [[ "$PLATFORMS" == *","* ]] && MULTIPLATFORM="YES"
-  local SHOULD_USE_LOCAL
 
   # ${VAR:+VALUE} означает:
   # «Если $VAR не пустой, вернуть VALUE, иначе — пустую строку».
@@ -267,7 +266,7 @@ build_image_script() {
 
   local PARAMS_ARR=()
 
-  [ "$SHOULD_PUSH" = true ] && [ -z ${NO_PUSH:-} ] && PARAMS_ARR+=(--push)
+  [ "${SHOULD_PUSH}" = true ] && [ -z "${NO_PUSH:-}" ] && PARAMS_ARR+=(--push)
 
   [ ! -n "${TARGET}" ] && [ ! -n "${MULTIPLATFORM}" ] && PARAMS_ARR+=(--load)
 
