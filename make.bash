@@ -10,7 +10,7 @@
 # Пример включения в начале скрипта
 ##############
 
-!/usr/bin/env bash
+#!/usr/bin/env bash
 set -euo pipefail
 [ -e "$(dirname "$(readlink -f "$0")")/scripts/make.bash" ] \
   || git submodule update --init scripts

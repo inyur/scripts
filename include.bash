@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # This file should be included in other files by command:
-# source "$(dirname "$(readlink -f "$0")")/include.bash"
+# source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/include.bash"
 
 set -euo pipefail # Fail on first error
 shopt -s expand_aliases
