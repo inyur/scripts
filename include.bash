@@ -11,6 +11,10 @@ set -o allexport # Enable exports all defined variables
 export SCRIPT=$(readlink -f "$0")
 export SCRIPT_PATH=$(dirname "$SCRIPT")
 
+#get_script_path() {
+#  echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+#}
+
 # --- Цвета для уведомлений ---
 RED='\033[0;31m'
 GREEN='\033[0;32m'
